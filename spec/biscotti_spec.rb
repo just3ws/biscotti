@@ -1,81 +1,37 @@
 # frozen_string_literal: true
 
-require 'pry'
-
-require 'benchmark'
-require 'awesome_print'
-
-module Biscotti
-  module_function
-
-  def letters_frequency_idx(letters)
-    Hash[
-      letters
-      .group_by { |x| letters.count { |y| x == y } }
-      .flat_map do |k, v|
-        v.uniq.map { |l| [l, k] }
-      end
-    ]
-  end
-
-  def library
-    ap Gem::Specification.find_by_name('biscotti').datadir
-    ap Dir[Gem::Specification.find_by_name('biscotti').datadir]
-    open('/Users/mike/src/github.com/just3ws/biscotti/data/words.lst', 'r').readlines
-  end
-
-  def word_length_idx(words)
-    words.group_by(&:length)
-  end
-
-  def find_words(input, min_word_length = 2)
-    sources = library
-
-    puts "#{sources.count} words in dictionary"
-
-    letters = input.split('').sort
-
-    letters_frequency_idx = Biscotti.letters_frequency_idx(letters)
-
-    words = letters.count.downto(min_word_length).each_with_object([]) do |letter_count, words|
-      words.concat(letters.permutation(letter_count).to_a.map(&:join))
-    end
-
-    dictionary = sources
-                 .map(&:chomp)
-                 .select { |word| word.length >= min_word_length }
-                 .select { |word| word.length <= letters.count }
-                 .map { |word| word.strip.downcase.split('') }
-                 .select { |word| (word - letters).empty? }
-                 .select { |word| word.all? { |l0| word.count { |l1| l1 == l0 } <= letters_frequency_idx[l0] } }
-                 .map(&:join)
-
-    output = dictionary & words
-  end
-end
-
 RSpec.describe Biscotti do
+  subject(:output) do
+    described_class.find_words(
+      input,
+      dictionary: dictionary,
+      min_word_length: min_word_length
+    )
+  end
+
+  let(:input) { 'aadfgnno' }
+
+  let(:dictionary) { described_class.load_dictionary(File.join(Dir.pwd, 'spec', 'fixtures', 'fandango.lst').freeze) }
+
+  let(:min_word_length) { 2 }
+
   it 'has a version number' do
     expect(Biscotti::VERSION).not_to be nil
   end
 
-  it 'does something useful' do
-    min_word_length = 2
+  it 'finds 30 words' do
+    expect(output.count).to eq(30)
+  end
 
-    input = 'fandango'
+  it 'finds "fandango" in the list' do
+    expect(output).to include('fandango')
+  end
 
-    output = []
+  it 'has no words shorter than minimum word length' do
+    expect(output.all? { |word| word.length >= min_word_length }).to be(true)
+  end
 
-    bmark = Benchmark.realtime do
-      output = described_class.find_words(input)
-    end
-
-    ap [:bmark, bmark]
-
-    puts "#{output.count} words in output"
-    ap described_class.word_length_idx(output)
-
-    # binding.pry
-    # puts
+  it 'has no words longer than the list of letters' do
+    expect(output.all? { |word| word.length <= input.length }).to be(true)
   end
 end
