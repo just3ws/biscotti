@@ -11,6 +11,12 @@ require 'biscotti'
 
 require 'optparse'
 
+require 'awesome_print'
+
+word = 'tango'.split('').sort.freeze
+
+ap word
+
 # OptionParser.new do |opts|
 #   opts.banner = 'Usage: bundle exec biscotti [OPTION]... [FILE]'
 
