@@ -20,6 +20,7 @@ module Biscotti
 
   def library
     ap Gem::Specification.find_by_name('biscotti').datadir
+    ap Dir[Gem::Specification.find_by_name('biscotti').datadir]
     open('/Users/mike/src/github.com/just3ws/biscotti/data/words.lst', 'r').readlines
   end
 
