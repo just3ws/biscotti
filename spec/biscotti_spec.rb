@@ -19,7 +19,8 @@ module Biscotti
   end
 
   def library
-    open('/usr/share/dict/words', 'r').readlines # .map { |word| word.strip.downcase.split('') }
+    ap Gem::Specification.find_by_name('biscotti').datadir
+    open('/Users/mike/src/github.com/just3ws/biscotti/data/words.lst', 'r').readlines
   end
 
   def word_length_idx(words)
