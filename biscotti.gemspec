@@ -14,9 +14,11 @@ Gem::Specification.new do |spec|
   spec.description   = 'Generate a list of possible words for a given set of letters.'
   spec.homepage      = 'https://github.com/just3ws/biscotti'
 
+  spec.license       = 'GPL-3.0+'
+
   # Specify which files should be added to the gem when it is released.
   # The `git ls-files -z` loads the files in the RubyGem that have been added into git.
-  spec.files         = Dir.chdir(File.expand_path(__dir__)) do
+  spec.files = Dir.chdir(File.expand_path(__dir__)) do
     `git ls-files -z`.split("\x0").reject { |f| f.match(%r{^(test|spec|features)/}) }
   end
   spec.bindir = 'exe'
