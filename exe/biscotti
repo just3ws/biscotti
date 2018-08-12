@@ -8,32 +8,45 @@ Signal.trap('TERM') { exit(143) }
 require 'bundler/setup'
 
 require 'biscotti'
+require 'biscotti/cli'
 
 require 'optparse'
 
-require 'awesome_print'
+OptionParser.new do |opts|
+  opts.banner = 'Usage: bundle exec biscotti [--version] [--help] <letters>'
 
-word = 'tango'.split('').sort.freeze
+  opts.on('-V', '--version', 'Print version info') do
+    $stdout.puts("biscotti version #{Biscotti::VERSION}")
+    exit(0)
+  end
 
-ap word
+  # TODO: Print dictionary
+  # TODO: Minimum character count
+  # TODO: Provide a custom dictionary
+  # TODO: Output as a grouped list by word length
 
-# OptionParser.new do |opts|
-#   opts.banner = 'Usage: bundle exec biscotti [OPTION]... [FILE]'
+  opts.on_tail('-h', '--help', 'Show this message') do
+    warn(opts)
+    exit(0)
+  end
+end.parse!
 
-#   opts.on('-V', '--version', 'Print version info') do
-#     $stdout.puts(Biscotti::VERSION)
-#     exit(0)
-#   end
-
-#   opts.on_tail('-h', '--help', 'Show this message') do
-#     warn(opts)
-#     exit(0)
-#   end
-# end.parse!
-
-# raise 'File not processable' unless Sodor::CLI.processable?
+# raise 'File not processable' unless Biscotti::CLI.processable?
 
 begin
+  dictionary = Biscotti.load_dictionary(File.join(Dir.pwd, 'data', 'biscotti', 'words.lst').freeze)
+  letters = ARGV.flat_map { |word| word.downcase.split('') }.sort.join
+  min_word_length = 2
+
+  output = Biscotti.find_words(
+    letters,
+    dictionary: dictionary,
+    min_word_length: min_word_length
+  )
+
+  output.each do |word|
+    $stdout.puts(word)
+  end
 rescue Errno::EPIPE
   exit(74)
 end
