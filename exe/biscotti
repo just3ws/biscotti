@@ -37,8 +37,10 @@ end.parse!
 
 # raise 'File not processable' unless Biscotti::CLI.processable?
 
+BISCOTTI_HOME = File.realpath(File.join(File.dirname(__FILE__), '..'))
+
 begin
-  dictionary = Biscotti.load_dictionary(File.join(Dir.pwd, 'data', 'biscotti', 'words.lst').freeze)
+  dictionary = Biscotti.load_dictionary(File.join(BISCOTTI_HOME, 'data', 'biscotti', 'words.lst').freeze)
   letters = ARGV.flat_map { |word| word.downcase.split('') }.sort.join
   min_word_length = 2
 
