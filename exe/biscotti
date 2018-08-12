@@ -7,6 +7,8 @@ Signal.trap('TERM') { exit(143) }
 
 require 'bundler/setup'
 
+$LOAD_PATH.unshift("#{__dir__}/../lib")
+
 require 'biscotti'
 require 'biscotti/cli'
 
@@ -24,6 +26,8 @@ OptionParser.new do |opts|
   # TODO: Minimum character count
   # TODO: Provide a custom dictionary
   # TODO: Output as a grouped list by word length
+  # TODO: Verbose mode to emit more than just the list
+  # TODO: Alternative formats mode: JSON, Yaml, Text (default)
 
   opts.on_tail('-h', '--help', 'Show this message') do
     warn(opts)

@@ -24,7 +24,7 @@ module Biscotti
   end
 
   def find_words(input, min_word_length: 2, dictionary: [])
-    puts "#{dictionary.count} words in dictionary"
+    # puts "#{dictionary.count} words in dictionary"
 
     letters = input.split('').sort
 

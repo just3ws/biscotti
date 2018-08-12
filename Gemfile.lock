@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    biscotti (0.1.0)
+    biscotti (0.1.1)
 
 GEM
   remote: https://rubygems.org/
