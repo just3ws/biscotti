@@ -12,36 +12,19 @@ $LOAD_PATH.unshift("#{__dir__}/../lib")
 require 'biscotti'
 require 'biscotti/cli'
 
-require 'optparse'
-
-OptionParser.new do |opts|
-  opts.banner = 'Usage: bundle exec biscotti [--version] [--help] <letters>'
-
-  opts.on('-V', '--version', 'Print version info') do
-    $stdout.puts("biscotti version #{Biscotti::VERSION}")
-    exit(0)
-  end
-
-  # TODO: Print dictionary
-  # TODO: Minimum character count
-  # TODO: Provide a custom dictionary
-  # TODO: Output as a grouped list by word length
-  # TODO: Verbose mode to emit more than just the list
-  # TODO: Alternative formats mode: JSON, Yaml, Text (default)
-
-  opts.on_tail('-h', '--help', 'Show this message') do
-    warn(opts)
-    exit(0)
-  end
-end.parse!
-
-# raise 'File not processable' unless Biscotti::CLI.processable?
-
 BISCOTTI_HOME = File.realpath(File.join(File.dirname(__FILE__), '..'))
 
 begin
-  dictionary = Biscotti.load_dictionary(File.join(BISCOTTI_HOME, 'data', 'biscotti', 'words.lst').freeze)
+  options = Biscotti::CLI::OptParser.parse!(ARGV)
+
+  dictionary_file = options.fetch(:dictionary, File.join(BISCOTTI_HOME, 'data', 'biscotti', 'words.lst')).freeze
+
+  # Raise error if dictionary file doesn't exist or cannot be read.
+
+  dictionary = Biscotti.load_dictionary(dictionary_file).freeze
+
   letters = ARGV.flat_map { |word| word.downcase.split('') }.sort.join
+
   min_word_length = 2
 
   output = Biscotti.find_words(

@@ -34,10 +34,12 @@ module Biscotti
       w.concat(letters.permutation(letter_count).to_a.map(&:join))
     end
 
+    letters_count = letters.count
+    word_length_range = (min_word_length..letters_count).freeze
+
     words & dictionary
             .map(&:chomp)
-            .select { |word| word.length >= min_word_length }
-            .select { |word| word.length <= letters.count }
+            .select { |word| word_length_range.include?(word.length) }
             .map { |word| word.strip.downcase.split('') }
             .select { |word| (word - letters).empty? }
             .select { |word| word.all? { |l0| word.count { |l1| l1 == l0 } <= letters_frequency_idx[l0] } }

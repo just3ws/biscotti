@@ -1,5 +1,13 @@
 # Change log
 
+## 0.1.4 (2019-06-17)
+
+### Changes
+
+- Updated the dictionary ([@just3ws][])
+- Added `--dictionary` option for customer word lists ([@just3ws][])
+- Refactored filters on results ([@just3ws][])
+
 ## 0.1.3 (2018-08-12)
 
 ### Changes
